@@ -50,6 +50,11 @@ namespace CodePlus.API.Controllers
         {
             var categories = await _categoryRepository.GetAllAsync();
 
+            if (categories == null)
+            {
+                return NotFound();
+            }
+
             //Map Domain model to DTO
 
             var response = new List<CategoryDto>();
@@ -66,7 +71,7 @@ namespace CodePlus.API.Controllers
         public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             var existingCategory = await _categoryRepository.GetById(id);
-            if(existingCategory != null)
+            if(existingCategory is null)
             {
                 return NotFound();
             }
@@ -97,7 +102,7 @@ namespace CodePlus.API.Controllers
 
             category = await _categoryRepository.UpdateAsync(category);
 
-            if(category != null)
+            if(category is null)
             {
                 return NotFound();
             }
