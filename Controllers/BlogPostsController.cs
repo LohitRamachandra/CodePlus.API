@@ -13,9 +13,12 @@ namespace CodePlus.API.Controllers
     public class BlogPostsController : ControllerBase
     {
         private readonly IBlogPostRepository _blogPostRepository;
-        public BlogPostsController(IBlogPostRepository blogPostRepository)
+        private readonly ICategoryRepository _categoryRepository;
+        public BlogPostsController(IBlogPostRepository blogPostRepository, ICategoryRepository categoryRepository)
         {
             _blogPostRepository = blogPostRepository;
+            _categoryRepository = categoryRepository;
+
         }
 
         // POST: {apibaseurl}/api/blogposts
@@ -33,19 +36,19 @@ namespace CodePlus.API.Controllers
                 PublishedDate = request.PublishedDate,
                 ShortDescription = request.ShortDescription,
                 Title = request.Title,
-                UrlHandle = request.UrlHandle
-                //Categories = new List<Category>()
+                UrlHandle = request.UrlHandle,
+                Categories = new List<Category>()
             };
 
 
-            //foreach (var categoryGuid in request.Categories)
-            //{
-            //    var existingCategory = await categoryRepository.GetById(categoryGuid);
-            //    if (existingCategory is not null)
-            //    {
-            //        blogPost.Categories.Add(existingCategory);
-            //    }
-            //}
+            foreach (var categoryGuid in request.Categories)
+            {
+                var existingCategory = await _categoryRepository.GetById(categoryGuid);
+                if (existingCategory is not null)
+                {
+                    blogPost.Categories.Add(existingCategory);
+                }
+            }
 
             blogPost = await _blogPostRepository.CreateAsync(blogPost);
 
@@ -61,12 +64,12 @@ namespace CodePlus.API.Controllers
                 ShortDescription = blogPost.ShortDescription,
                 Title = blogPost.Title,
                 UrlHandle = blogPost.UrlHandle,
-                //Categories = blogPost.Categories.Select(x => new CategoryDto
-                //{
-                //    Id = x.Id,
-                //    Name = x.Name,
-                //    UrlHandle = x.UrlHandle
-                //}).ToList()
+                Categories = blogPost.Categories.Select(x => new CategoryDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UrlHandle = x.UrlHandle
+                }).ToList()
             };
 
             return Ok(response);
@@ -93,12 +96,12 @@ namespace CodePlus.API.Controllers
                     ShortDescription = blogPost.ShortDescription,
                     Title = blogPost.Title,
                     UrlHandle = blogPost.UrlHandle,
-                    //Categories = blogPost.Categories.Select(x => new CategoryDto
-                    //{
-                    //    Id = x.Id,
-                    //    Name = x.Name,
-                    //    UrlHandle = x.UrlHandle
-                    //}).ToList()
+                    Categories = blogPost.Categories.Select(x => new CategoryDto
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        UrlHandle = x.UrlHandle
+                    }).ToList()
                 });
             }
 
@@ -131,12 +134,12 @@ namespace CodePlus.API.Controllers
                 ShortDescription = blogPost.ShortDescription,
                 Title = blogPost.Title,
                 UrlHandle = blogPost.UrlHandle,
-                //Categories = blogPost.Categories.Select(x => new CategoryDto
-                //{
-                //    Id = x.Id,
-                //    Name = x.Name,
-                //    UrlHandle = x.UrlHandle
-                //}).ToList()
+                Categories = blogPost.Categories.Select(x => new CategoryDto
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    UrlHandle = x.UrlHandle
+                }).ToList()
             };
 
             return Ok(response);
