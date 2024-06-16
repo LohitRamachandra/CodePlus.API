@@ -47,7 +47,13 @@ namespace CodePlus.API.Controllers
         // GET: https://localhost:7226/api/Categories
         [HttpGet]
         //[Authorize(Roles = "Writer")]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<IActionResult> GetAllCategories(
+            [FromQuery] string? query,
+            [FromQuery] string? sortBy,
+            [FromQuery] string? sortDirection,
+            [FromQuery] int? pageNumber,
+            [FromQuery] int? pageSize
+            )
         {
             var categories = await _categoryRepository.GetAllAsync();
 
