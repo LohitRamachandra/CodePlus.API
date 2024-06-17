@@ -19,5 +19,7 @@ namespace CodePlus.API.Repositories.Interface
         Task<Category?> UpdateAsync(Category category);
 
         Task<Category?> DeleteAsync(Guid id);
+
+        Task<int> GetCount();
     }
 }

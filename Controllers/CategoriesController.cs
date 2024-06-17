@@ -21,7 +21,7 @@ namespace CodePlus.API.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Writer")]
+        [Authorize(Roles = "Writer , Admin")]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto request)
         {
             // Map DTO to Domain Model
@@ -44,7 +44,7 @@ namespace CodePlus.API.Controllers
             return Ok(response);
         }
 
-        // GET: https://localhost:7226/api/Categories
+        // GET: https://localhost:7226/api/Categories?query=html&sortBy=name&sortDirection=desc
         [HttpGet]
         //[Authorize(Roles = "Writer")]
         public async Task<IActionResult> GetAllCategories(
@@ -96,7 +96,7 @@ namespace CodePlus.API.Controllers
         // PUT: https://localhost:7226/api/categories/{id}
         [HttpPut]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+        [Authorize(Roles = "Writer , Admin")]
         public async Task<IActionResult> EditCategory([FromRoute] Guid id, UpdateCategoryRequestDto request)
         {
             // Convert DTO to Domain Model
@@ -127,7 +127,7 @@ namespace CodePlus.API.Controllers
         // DELETE: https://localhost:7226/api/categories/{id}
         [HttpDelete]
         [Route("{id:Guid}")]
-        [Authorize(Roles = "Writer")]
+        [Authorize(Roles = "Writer,Admin")]
         public async Task<IActionResult> DeleteCategory([FromRoute] Guid id)
         {
             var category = await _categoryRepository.DeleteAsync(id);
@@ -146,6 +146,17 @@ namespace CodePlus.API.Controllers
             };
 
             return Ok(response);
+        }
+
+        // GET: https://localhost:7226/api/categories/count
+        [HttpGet]
+        [Route("count")]
+        //[Authorize(Roles = "Writer")]
+        public async Task<IActionResult> GetCategoriesTotal()
+        {
+            var count = await _categoryRepository.GetCount();
+
+            return Ok(count);
         }
 
     }

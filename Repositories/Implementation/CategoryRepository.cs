@@ -107,5 +107,10 @@ namespace CodePlus.API.Repositories.Implementation
 
             return null;
         }
+
+        public async Task<int> GetCount()
+        {
+            return await _dbContext.Categories.CountAsync();
+        }
     }
 }

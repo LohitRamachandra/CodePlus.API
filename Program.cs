@@ -50,12 +50,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 1;
 });
 
-builder.Services.AddAuthentication(options =>
-{ 
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(jwt =>
     {
         var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("Jwt:Key").Value);
@@ -64,12 +59,13 @@ builder.Services.AddAuthentication(options =>
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(key),
-            AuthenticationType = "Jwt",
             ValidateIssuer = true,
-            ValidateAudience = false,
-            ValidateLifetime = false,
-            RequireExpirationTime = false
-            
+            ValidIssuer = builder.Configuration["Jwt:Issuer"], // Retrieve JWT issuer
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["Jwt:Audience"], // Retrieve JWT audience
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+
         };
     });
 
